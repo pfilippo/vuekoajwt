@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 crypto.DEFAULT_ENCODING = 'hex';
 const db = require('diskdb');
-const dbu = db.connect('DB', ['users']);
+const dbu = db.connect('db', ['users']);
 
 const app = new Koa();
 const router = new Router();
