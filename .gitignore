@@ -7,3 +7,4 @@ npm-debug.log
 *.dev
 .vscode
 package-lock.json
+db/users.json

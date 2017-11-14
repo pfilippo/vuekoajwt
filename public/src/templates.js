@@ -4,12 +4,13 @@ const SignIn = {
         <div class="modal-wrapper">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h4>Login</h4>
+                    <h3>Login</h3>
                 </div>
                 <div class="modal-body">
                     <input type="email" name="email" placeholder="Email" v-model="email">
                     <input type="password" name="password" placeholder="Password" v-model="password">
                     <input type="submit" v-on:click="login">
+                    <span class="error" v-if="error">Wrong username or password</span>
                 </div>
                 <ul class="sublinks">
                     <li>
@@ -27,7 +28,7 @@ const SignIn = {
         return {
             email: '',
             password: '',
-            submitted: ''
+            error: false
         }
     },
     methods: {
@@ -39,10 +40,18 @@ const SignIn = {
                 router.push('/');
             })
             .catch(function (error) {
-                self.email = "wrong username or password";
+                self.error = true;
             })    
         }
-    }
+    },
+    watch: {
+        email: function() {
+            this.error = false;
+        },
+        password: function() {
+            this.error = false;
+        }
+    }    
 }
 
 const SignOn = {
@@ -51,13 +60,14 @@ const SignOn = {
             <div class="modal-wrapper">
                 <div class="modal-container">
                     <div class="modal-header">
-                        <h4>Registering new user</h4>
+                        <h3>Registering new user</h3>
                     </div>
                     <div class="modal-body">
                         <input type="text" name="name" placeholder="Name" v-model="register.name">
-                        <input type="email" name="email" v-bind:placeholder="email" v-model="register.email">
+                        <input type="email" name="email" placeholder="Email" v-model="register.email">
                         <input type="password" name="password" placeholder="Password" v-model="register.password">
                         <input type="submit" v-on:click="postUser">
+                        <span class="error" v-if="error">Something wrong</span>
                     </div>
                     <div class="modal-footer">
                         <div class="sublink">
@@ -75,7 +85,7 @@ const SignOn = {
                 , email: ''
                 , password: ''
             },
-            email: "Email"
+            error: false
         }
     },
     methods: {
@@ -86,12 +96,21 @@ const SignOn = {
                     router.push('/');
                 })
                 .catch(function (error) {
-                    self.email = "already registered";
-                    self.register.email = "";
+                    self.error = true;
                 })
+        },
+    },
+    watch: {
+        'register.name': function() {
+            this.error = false;
+        },
+        'register.email': function() {
+            this.error = false;
+        },
+        'register.password': function() {
+            this.error = false;
         }
-        
-    }
+    }    
 }
 
 const Home = {

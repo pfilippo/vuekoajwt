@@ -60,12 +60,12 @@ router.post('/user', (ctx, next) => {
 router.post('/login', async(ctx, next) => {
     await passport.authenticate('local', function (err, user) {
       if (user) {
-        //--payload - информация которую мы храним в токене и можем из него получать
-        const payload = {
-          displayName: user.name,
+        let payload = {
+          name: user.name,
           email: user.email
         };
-        const token = jwt.sign(payload, jwtsecret); //здесь создается JWT
+        console.log(payload);
+        const token = jwt.sign(payload, jwtsecret); 
         ctx.body = {user: user.Name, token: token}; //'JWT ' + 
       }  
       else {
