@@ -6,10 +6,10 @@ const passport = require('koa-passport');
 const LocalStrategy = require('passport-local'); 
 const JwtStrategy = require('passport-jwt').Strategy; 
 const ExtractJwt = require('passport-jwt').ExtractJwt; 
-const jwtsecret = "mysecretkey"; 
+const jwtsecret = 'mysecretkey'; 
 const jwt = require('jsonwebtoken'); 
 const crypto = require('crypto');
-crypto.DEFAULT_ENCODING = 'hex';
+//crypto.DEFAULT_ENCODING = 'hex';
 const db = require('diskdb');
 const dbu = db.connect('db', ['users']);
 
@@ -31,7 +31,7 @@ passport.use(new LocalStrategy({
   function (email, password, done) {
     let checkUser = dbu.users.findOne({email: email});
     if (!checkUser) done(null, false, {message: 'Bad username or password'});
-    else if (crypto.pbkdf2Sync(password, checkUser.salt, 1, 128, 'sha1') == checkUser.password) done(null, checkUser);
+    else if (crypto.pbkdf2Sync(password, checkUser.salt, 1, 128, 'sha1').toString('hex') == checkUser.password) done(null, checkUser);
     else  done(null, false, {message: 'Bad username or password'});
   })
 );
@@ -48,7 +48,7 @@ router.post('/user', (ctx, next) => {
     let checkUser = dbu.users.findOne({email: newUser.email});
     if (!checkUser) {
         newUser.salt = crypto.randomBytes(128).toString('base64');
-        newUser.password = crypto.pbkdf2Sync(newUser.password, newUser.salt, 1, 128, 'sha1');
+        newUser.password = crypto.pbkdf2Sync(newUser.password, newUser.salt, 1, 128, 'sha1').toString('hex');
         dbu.users.save(newUser);
         ctx.response.status = 200;
     }
@@ -60,9 +60,8 @@ router.post('/user', (ctx, next) => {
 router.post('/login', async(ctx, next) => {
     await passport.authenticate('local', function (err, user) {
       if (user) {
-        let payload = {
-          name: user.name,
-          email: user.email
+        let payload = { //          name: user.name,
+          email: user.email 
         };
         console.log(payload);
         const token = jwt.sign(payload, jwtsecret); 
